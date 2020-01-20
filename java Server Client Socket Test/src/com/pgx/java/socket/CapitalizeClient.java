@@ -38,5 +38,6 @@ public class CapitalizeClient
     public static void setMessageCount(int _messageCount)
     {
     	messageCount = _messageCount;
+    	System.out.println("De message count is gezet op: "+ messageCount+"\n");
     }
 }
