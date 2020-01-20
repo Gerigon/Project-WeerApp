@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
@@ -13,7 +15,8 @@ import java.util.concurrent.Executors;
  * capitalizing it, and sending the response back is all done on the thread, allowing
  * much greater throughput because more clients can be handled concurrently.
  */
-public class CapitalizeServer {
+public class CapitalizeServer 
+{
 
     /**
      * Runs the server. When a client connects, the server spawns a new thread to do
@@ -21,8 +24,14 @@ public class CapitalizeServer {
      * number of threads via a thread pool (otherwise millions of clients could cause
      * the server to run out of resources by allocating too many threads).
      */
-    public static void main(String[] args) throws Exception {
-        try (var listener = new ServerSocket(59898)) {
+	
+	static ArrayList<String> totalText = new ArrayList<String>();
+	static int messageCount = 0;
+	
+    public static void main(String[] args) throws Exception 
+    {
+        try (var listener = new ServerSocket(59898)) 
+        {
             System.out.println("The capitalization server is running...");
             var pool = Executors.newFixedThreadPool(20);
             while (true) {
@@ -41,11 +50,15 @@ public class CapitalizeServer {
         @Override
         public void run() {
             System.out.println("Connected: " + socket);
-            try {
+            
+            try 
+            {
                 var in = new Scanner(socket.getInputStream());
                 var out = new PrintWriter(socket.getOutputStream(), true);
-                while (in.hasNextLine()) {
-                    out.println(in.nextLine().toUpperCase());
+                out.println(messageCount);
+                while (in.hasNextLine()) 
+                {
+                	messageCount++;
                 }
             } catch (Exception e) {
                 System.out.println("Error:" + socket);
