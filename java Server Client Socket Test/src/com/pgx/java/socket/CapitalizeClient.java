@@ -25,7 +25,7 @@ public class CapitalizeClient
             {
             	if (messageCount == 0)
             	{
-            		messageCount = Integer.parseInt(in.nextLine());
+            		setMessageCount(Integer.parseInt(in.nextLine()));
             	}
             	else
             	{
