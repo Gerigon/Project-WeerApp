@@ -61,7 +61,7 @@ class ClientServerOutputReader extends Thread {
 			
 			String serverOutput = "";
 			String tempOutput = "";
-			while( (tempOutput = serverOutput) != ((serverOutput += in.nextLine()))) {
+			while( (tempOutput = serverOutput) != ((serverOutput = in.nextLine()))) {
 				System.out.println(serverOutput);
 			}
 		} catch(IOException e) {
