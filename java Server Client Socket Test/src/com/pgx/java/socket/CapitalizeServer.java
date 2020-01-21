@@ -25,7 +25,6 @@ public class CapitalizeServer
      * the server to run out of resources by allocating too many threads).
      */
 	
-	static ArrayList<ClientHandler> connectedClients = new ArrayList<>();
 	static ArrayList<String> totalText = new ArrayList<String>();
 	static int messageCount = 0;
 	
@@ -59,7 +58,7 @@ public class CapitalizeServer
                 out.println(messageCount);
                 while (in.hasNextLine()) 
                 {
-                	//clear the console
+                	//"clear" the console
                 	for (int i = 0; i < 50; ++i) {
                 		out.println();
                 	}
@@ -69,7 +68,6 @@ public class CapitalizeServer
                 	for(String text : totalText) {
                 		out.println(text);
                 	}
-                	
                 }
             } catch (Exception e) {
                 System.out.println("Error:" + socket);

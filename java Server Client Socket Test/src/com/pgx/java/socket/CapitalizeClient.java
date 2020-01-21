@@ -18,7 +18,9 @@ public class CapitalizeClient
         
         var socket = new Socket(args[0], 59898);
         ClientServerOutputReader in = new ClientServerOutputReader(socket);
+        in.start();
         ClientUserInputReader out = new ClientUserInputReader(socket);
+        out.start();
 //        try (var socket = new Socket(args[0], 59898)) {
 //            System.out.println("Enter lines of text then Ctrl+D or Ctrl+C to quit");
 //            var scanner = new Scanner(System.in);
@@ -58,7 +60,7 @@ class ClientServerOutputReader extends Thread {
 			var in = new Scanner(serverSocket.getInputStream());
 			
 			String serverOutput = "";
-			while((serverOutput = in.nextLine()) != null) {
+			while(in.hasNextLine()) {
 				System.out.println(serverOutput);
 			}
 		} catch(IOException e) {
