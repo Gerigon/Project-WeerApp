@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
  */
 public class CapitalizeServer 
 {
-
+	
     /**
      * Runs the server. When a client connects, the server spawns a new thread to do
      * the servicing and immediately returns to listening. The application limits the
@@ -25,6 +25,7 @@ public class CapitalizeServer
      * the server to run out of resources by allocating too many threads).
      */
 	
+	static ArrayList<ClientHandler> connectedClients = new ArrayList<>();
 	static ArrayList<String> totalText = new ArrayList<String>();
 	static int messageCount = 0;
 	
@@ -35,15 +36,15 @@ public class CapitalizeServer
             System.out.println("The capitalization server is running...");
             var pool = Executors.newFixedThreadPool(20);
             while (true) {
-                pool.execute(new Capitalizer(listener.accept()));
+                pool.execute(new ClientHandler(listener.accept()));
             }
         }
     }
 
-    private static class Capitalizer implements Runnable {
+    private static class ClientHandler implements Runnable {
         private Socket socket;
 
-        Capitalizer(Socket socket) {
+        ClientHandler(Socket socket) {
             this.socket = socket;
         }
 
@@ -58,7 +59,17 @@ public class CapitalizeServer
                 out.println(messageCount);
                 while (in.hasNextLine()) 
                 {
-                	messageCount++;
+                	//clear the console
+                	for (int i = 0; i < 50; ++i) {
+                		out.println();
+                	}
+                	
+                	//send the complete chatlog
+                	totalText.add(in.nextLine());
+                	for(String text : totalText) {
+                		out.println(text);
+                	}
+                	
                 }
             } catch (Exception e) {
                 System.out.println("Error:" + socket);

@@ -15,29 +15,74 @@ public class CapitalizeClient
             System.err.println("Pass the server IP as the sole command line argument");
             return;
         }
-        try (var socket = new Socket(args[0], 59898)) {
-            System.out.println("Enter lines of text then Ctrl+D or Ctrl+C to quit");
-            var scanner = new Scanner(System.in);
-            var in = new Scanner(socket.getInputStream());
-            var out = new PrintWriter(socket.getOutputStream(), true);
-            
-            while (scanner.hasNextLine()) 
-            {
-            	if (messageCount == 0)
-            	{
-            		setMessageCount(Integer.parseInt(in.nextLine()));
-            	}
-            	else
-            	{
-            		out.println(scanner.nextLine());
-                	System.out.println(in.nextLine());
-            	}
-            }
-        }
+        
+        var socket = new Socket(args[0], 59898);
+        ClientServerOutputReader in = new ClientServerOutputReader(socket);
+        ClientUserInputReader out = new ClientUserInputReader(socket);
+//        try (var socket = new Socket(args[0], 59898)) {
+//            System.out.println("Enter lines of text then Ctrl+D or Ctrl+C to quit");
+//            var scanner = new Scanner(System.in);
+//            var in = new Scanner(socket.getInputStream());
+//            var out = new PrintWriter(socket.getOutputStream(), true);
+//            
+//            while (scanner.hasNextLine()) 
+//            {
+//            	if (messageCount == 0)
+//            	{
+//            		setMessageCount(Integer.parseInt(in.nextLine()));
+//            	}
+//            	else
+//            	{
+//            		out.println(scanner.nextLine());
+//                	System.out.println(in.nextLine());
+//            	}
+//            }
+//        }
     }
     public static void setMessageCount(int _messageCount)
     {
     	messageCount = _messageCount;
     	System.out.println("De message count is gezet op: "+ messageCount+"\n");
     }
+}
+
+class ClientServerOutputReader extends Thread {
+	Socket serverSocket;
+	
+	public ClientServerOutputReader(Socket serverSocket) {
+		this.serverSocket = serverSocket;
+	}
+	
+	public void run() {
+		try {
+			var in = new Scanner(serverSocket.getInputStream());
+			
+			String serverOutput = "";
+			while((serverOutput = in.nextLine()) != null) {
+				System.out.println(serverOutput);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+class ClientUserInputReader extends Thread {
+	Socket serverSocket;
+	
+	public ClientUserInputReader(Socket serverSocket) {
+		this.serverSocket = serverSocket;
+	}
+	
+	public void run() {
+		try {
+			var out = new PrintWriter(serverSocket.getOutputStream(), true);
+			var scanner = new Scanner(System.in); 
+			while(scanner.hasNextLine()) {
+				out.println(scanner.nextLine());
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
