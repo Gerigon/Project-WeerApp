@@ -21,6 +21,8 @@ public class CapitalizeClient
         in.start();
         ClientUserInputReader out = new ClientUserInputReader(socket);
         out.start();
+        
+        //Oude code van het originele voorbeeld..
 //        try (var socket = new Socket(args[0], 59898)) {
 //            System.out.println("Enter lines of text then Ctrl+D or Ctrl+C to quit");
 //            var scanner = new Scanner(System.in);
@@ -46,45 +48,46 @@ public class CapitalizeClient
     	messageCount = _messageCount;
     	System.out.println("De message count is gezet op: "+ messageCount+"\n");
     }
-}
 
-class ClientServerOutputReader extends Thread {
-	Socket serverSocket;
-	
-	public ClientServerOutputReader(Socket serverSocket) {
-		this.serverSocket = serverSocket;
-	}
-	
-	public void run() {
-		try {
-			var in = new Scanner(serverSocket.getInputStream());
-			
-			String serverOutput = "";
-			while(in.hasNextLine()) {
-				System.out.println(serverOutput);
+
+	private class ClientServerOutputReader extends Thread {
+		Socket serverSocket;
+		
+		public ClientServerOutputReader(Socket serverSocket) {
+			this.serverSocket = serverSocket;
+		}
+		
+		public void run() {
+			try {
+				var in = new Scanner(serverSocket.getInputStream());
+				
+				String serverOutput = "";
+				while(in.hasNextLine()) {
+					System.out.println(serverOutput);
+				}
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
-		} catch(IOException e) {
-			e.printStackTrace();
 		}
 	}
-}
-
-class ClientUserInputReader extends Thread {
-	Socket serverSocket;
 	
-	public ClientUserInputReader(Socket serverSocket) {
-		this.serverSocket = serverSocket;
-	}
-	
-	public void run() {
-		try {
-			var out = new PrintWriter(serverSocket.getOutputStream(), true);
-			var scanner = new Scanner(System.in); 
-			while(scanner.hasNextLine()) {
-				out.println(scanner.nextLine());
+	private class ClientUserInputReader extends Thread {
+		Socket serverSocket;
+		
+		public ClientUserInputReader(Socket serverSocket) {
+			this.serverSocket = serverSocket;
+		}
+		
+		public void run() {
+			try {
+				var out = new PrintWriter(serverSocket.getOutputStream(), true);
+				var scanner = new Scanner(System.in); 
+				while(scanner.hasNextLine()) {
+					out.println(scanner.nextLine());
+				}
+			} catch(IOException e) {
+				e.printStackTrace();
 			}
-		} catch(IOException e) {
-			e.printStackTrace();
 		}
 	}
 }
