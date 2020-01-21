@@ -60,12 +60,14 @@ public class CapitalizeServer
                 {
                 	//"clear" the console
                 	for (int i = 0; i < 50; ++i) {
+                		System.out.println();
                 		out.println();
                 	}
                 	
                 	//send the complete chatlog
                 	totalText.add(in.nextLine());
                 	for(String text : totalText) {
+                		System.out.println(text);
                 		out.println(text);
                 	}
                 }

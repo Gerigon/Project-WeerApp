@@ -60,7 +60,8 @@ class ClientServerOutputReader extends Thread {
 			var in = new Scanner(serverSocket.getInputStream());
 			
 			String serverOutput = "";
-			while(in.hasNextLine()) {
+			String tempOutput = "";
+			while( (tempOutput = serverOutput) != ((serverOutput += in.nextLine()))) {
 				System.out.println(serverOutput);
 			}
 		} catch(IOException e) {
