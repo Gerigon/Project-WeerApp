@@ -45,7 +45,7 @@ public class NioSocketServer
                             System.out.println( "bytes read: " + bytesRead );
 
                             // Make sure that we have data to read
-                            if( byteBuffer.position() > 2 )
+                            if( byteBuffer.position() > 1 )
                             {
                                 // Make the buffer ready to read
                                 byteBuffer.flip();
@@ -116,7 +116,7 @@ public class NioSocketServer
         }
     }
 
-    public static void main( String[] args )
+    public static void main(String[] args)
     {
         NioSocketServer server = new NioSocketServer();
         try
