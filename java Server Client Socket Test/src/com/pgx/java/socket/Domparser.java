@@ -101,6 +101,10 @@ public class Domparser
 
 		                String[] strs = { STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR};
 		                
+		                //hier controleren of een van de strings leeg zijn
+		                //als een string leeg is de corepsonderende folder/file openen van de juiste dag
+		                //in deze file de laatste 30 gegevens extrapoleren
+		                //dan vullen we de missende data hiermee in
 
 		                //this gets the file id from the xml file and links it to the stations name from the hashmap
 		                String foldername = STN;
