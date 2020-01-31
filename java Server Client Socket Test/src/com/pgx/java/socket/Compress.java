@@ -1,4 +1,4 @@
-package domparser;
+package com.pgx.java.socket;
 import java.io.*;
 import java.util.zip.*;
 
