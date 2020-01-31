@@ -3,7 +3,10 @@ package com.pgx.java.socket;
 import java.net.*;
 import java.io.*;
 public class MultithreadedSocketServer {
+	
+	
     public static void main(String[] args) throws Exception {
+    	Domparser domparser = new Domparser();
         try{
             ServerSocket server=new ServerSocket(7789);
             int counter=0;
@@ -12,7 +15,7 @@ public class MultithreadedSocketServer {
                 counter++;
                 Socket serverClient=server.accept();  //server accept the client connection request
                 System.out.println(" >> " + "Client No:" + counter + " started!");
-                ServerClientThread sct = new ServerClientThread(serverClient,counter); //send  the request to a separate thread
+                ServerClientThread sct = new ServerClientThread(serverClient,counter,domparser); //send  the request to a separate thread
                 sct.start();
             }
         }catch(Exception e){

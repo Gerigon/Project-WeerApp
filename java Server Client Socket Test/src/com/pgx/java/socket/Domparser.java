@@ -29,27 +29,25 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class Domparser {
-	public static void main(String[] args) throws IOException {
-		
-		
-		
-        String delimiter = ",";
-        Map<String, String> stationIDNamesMap = new HashMap<>();
+public class Domparser 
+{
+	ArrayList<String> stationIDNamesMap;
+	
 
-        try(Stream<String> lines = Files.lines(Paths.get("StationIdNames.txt"))){
-            lines.filter(line -> line.contains(delimiter)).forEach(
-                line -> stationIDNamesMap.putIfAbsent(line.split(delimiter)[0], line.split(delimiter)[1])
-            );
-        }
+	public ArrayList<String> getStationIDNamesMap() {
+		return stationIDNamesMap;
+	}
+
+	public void parseWeatherData(Document weatherData) throws IOException {
+		String delimiter = ",";
+        
 	
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			try {
-				Document doc = builder.parse("file.xml");
 				
-				NodeList MList = doc.getElementsByTagName("MEASUREMENT");
+				NodeList MList = weatherData.getElementsByTagName("MEASUREMENT");
 				
 		        for (int i = 0; i < MList.getLength(); i++) {
 		            Node MNode = MList.item(i);
@@ -103,13 +101,15 @@ public class Domparser {
 
 		                String[] strs = { STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR};
 		                
-		                System.out.print(stationIDNamesMap.get(strs[0])+"\n");
 
 		                //this gets the file id from the xml file and links it to the stations name from the hashmap
-		                String foldername = stationIDNamesMap.get(strs[0]);
+		                String foldername = STN;
 		                String filename = strs[1];
+		                File Pathfile = new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\");
+		                File newDir = new File(Pathfile, foldername);
+		                newDir.mkdir();
+		                File file = new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+foldername+"\\"+filename + ".txt");
 		                
-		                File file = new File("C:\\Users\\ludew\\eclipse-workspace\\leertaak3\\stationsWeatherData\\"+foldername+"\\"+filename + ".txt"); 
 		                FileWriter fr = new FileWriter(file, true);
 		                
 		                for(int j = 0; j < strs.length; j++){
@@ -126,9 +126,6 @@ public class Domparser {
 
 		        }
 				
-			} catch (SAXException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -138,8 +135,9 @@ public class Domparser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
+	
+	
 
 }
  
