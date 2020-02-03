@@ -1,12 +1,19 @@
 package com.pgx.java.socket;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -101,6 +108,8 @@ public class Domparser
 
 		                String[] strs = { STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR};
 		                
+		                
+		                
 		                //hier controleren of een van de strings leeg zijn
 		                //als een string leeg is de corepsonderende folder/file openen van de juiste dag
 		                //in deze file de laatste 30 gegevens extrapoleren
@@ -112,9 +121,55 @@ public class Domparser
 		                File Pathfile = new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\");
 		                File newDir = new File(Pathfile, foldername);
 		                newDir.mkdir();
-		                File file = new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+foldername+"\\"+filename + ".txt");
+		                //File file = new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+foldername+"\\"+filename + ".txt");
+		                //FileWriter fr = new FileWriter(file, true);
 		                
-		                FileWriter fr = new FileWriter(file, true);
+		                String outputString = "";
+		                for (int j = 0; j < strs.length; j++) {
+		                	if(j != strs.length-1)
+		                	{
+		                		outputString += strs[j] + ",";
+		                	}
+		                	else
+		                	{
+		                		outputString += strs[j];
+		                	}
+						}
+		                //1 lijn weerdata 
+		                ByteArrayInputStream inputStream = new ByteArrayInputStream(outputString.getBytes());
+		                if (new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz").exists())
+						{
+		                	System.out.println("appending file");
+		                	De_compress.appendGZIP(new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz"), outputString);
+						}
+		                else
+		                {
+		                	System.out.println("creating file");
+		                	De_compress.compressGZIP(inputStream,new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz"));
+		                }
+		                
+		                int count = 0;
+		                for (String string : strs) 
+		                {
+							if (string == "")
+							{
+								File compressed = new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+STN+"\\"+DATE+".gz");
+								//System.out.println("missing data for: "+ compressed);
+								
+								
+								if (compressed.exists())
+								{
+									De_compress.completeMissingDataGZIP(compressed, count);
+								} 
+								else
+								{
+									System.out.println("file bestaat niet");
+								}
+								break;
+							}
+							count++;
+						}
+		                /*
 		                
 		                for(int j = 0; j < strs.length; j++){
 		                	if(j != strs.length-1){
@@ -125,7 +180,7 @@ public class Domparser
 		                }
 		               
 		                fr.write("\n");
-						fr.close();  
+						fr.close();  */
 		            }
 
 		        }
