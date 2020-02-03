@@ -141,4 +141,58 @@ public class De_compress {
             compressGZIP(inputStream,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
         }
     }
+    public static void correctTempDataGZIP(File input) throws IOException {
+        try (Reader decoder = new InputStreamReader(new GZIPInputStream(new FileInputStream(input)))){
+            BufferedReader br = new BufferedReader(decoder);
+            //String STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR = "";
+            String output="",line="";
+            String[] weatherDataLine = null;
+            ArrayList<String[]> weatherData = new ArrayList<String[]>();
+            while((line = br.readLine()) != null)
+            {
+            	System.out.println(line);
+            	weatherDataLine = line.split(",");
+            	weatherData.add(weatherDataLine);
+            	//output += line + "\n";
+            }
+            float newData = 0;
+            
+            if (weatherData.size() > 2)
+        	{
+        		System.out.println("bracket 1");
+				float prevData1,prevData2;
+				int floor = (weatherData.size()) -30;
+				if (floor < 0) 
+				{
+					floor = 0;
+				}
+				
+				System.out.println("\nadding missing numbers");
+				
+				prevData1 = (Float.parseFloat((weatherData.get(floor)[3])));
+				prevData2 = (Float.parseFloat(weatherData.get(weatherData.size()-2)[3]));
+				newData = prevData2+(prevData2 - prevData1);
+				
+				if (Float.parseFloat(weatherData.get(weatherData.size()-1 )[3])>= newData * 0.8) 
+				{
+
+					// do action
+				}
+				System.out.println(newData);
+        	}
+        	else if (weatherData.size() == 1)
+        	{
+        		System.out.println("bracket 2");
+        		newData = 0;
+        	}
+        	else if (weatherData.size() == 2)
+        	{
+        		System.out.println("bracket 3");
+        	}
+        	
+            System.out.println(output + "\n\n");
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(output.getBytes());
+            compressGZIP(inputStream,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
+        }
+    }
 }

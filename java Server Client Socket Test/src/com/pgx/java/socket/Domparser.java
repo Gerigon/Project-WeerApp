@@ -135,7 +135,6 @@ public class Domparser
 		                		outputString += strs[j];
 		                	}
 						}
-		                //1 lijn weerdata 
 		                ByteArrayInputStream inputStream = new ByteArrayInputStream(outputString.getBytes());
 		                if (new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz").exists())
 						{
@@ -166,6 +165,11 @@ public class Domparser
 									System.out.println("file bestaat niet");
 								}
 								break;
+							}
+							//temp
+							if (count == 3)
+							{
+								
 							}
 							count++;
 						}
