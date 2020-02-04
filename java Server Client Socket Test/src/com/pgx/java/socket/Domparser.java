@@ -135,19 +135,20 @@ public class Domparser
 		                		outputString += strs[j];
 		                	}
 						}
-		                ByteArrayInputStream inputStream = new ByteArrayInputStream(outputString.getBytes());
+		                
+		                
 		                if (new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz").exists())
 						{
-		                	System.out.println("appending file");
-		                	De_compress.appendGZIP(new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz"), outputString);
+		                	// Appending file
+		                	FileHandler.appendToGZIPFile(outputString, new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz"));
 						}
 		                else
 		                {
-		                	System.out.println("creating file");
-		                	De_compress.compressGZIP(inputStream,new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz"));
+		                	// Creating file
+		                	FileHandler.createAndCompressGZIPFile(outputString,new File(Pathfile+"\\"+foldername+"\\"+filename + ".gz"));
 		                }
 		                
-		                int count = 0;
+		                int column = 0;
 		                for (String string : strs) 
 		                {
 							if (string == "")
@@ -158,7 +159,7 @@ public class Domparser
 								
 								if (compressed.exists())
 								{
-									De_compress.completeMissingDataGZIP(compressed, count);
+									FileHandler.completeMissingDataGZIP(compressed, column);
 								} 
 								else
 								{
@@ -167,11 +168,11 @@ public class Domparser
 								break;
 							}
 							//temp
-							if (count == 3)
+							if (column == 3)
 							{
 								
 							}
-							count++;
+							column++;
 						}
 		                /*
 		                

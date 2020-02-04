@@ -15,12 +15,13 @@ import java.util.zip.GZIPOutputStream;
 
 
 
-public class De_compress {
+public class FileHandler {
 
-    private De_compress() {}
+    private FileHandler() {}
 
-    public static void compressGZIP(InputStream inputStream, File output) throws IOException {
+    public static void createAndCompressGZIPFile(String input, File output) throws IOException {
         try (GZIPOutputStream out = new GZIPOutputStream(new FileOutputStream(output))){
+        	ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
             byte[] buffer = new byte[1024];
             int len;
             while((len=inputStream.read(buffer)) != -1){
@@ -29,7 +30,7 @@ public class De_compress {
         }
     }
 
-    public static void appendGZIP(File input, String inputString) throws IOException {
+    public static void appendToGZIPFile(String inputString, File input) throws IOException {
         try (Reader decoder = new InputStreamReader(new GZIPInputStream(new FileInputStream(input)))){
             BufferedReader br = new BufferedReader(decoder);
             //String STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR = "";
@@ -41,9 +42,8 @@ public class De_compress {
             	output += line + "\n";
             }
             output += inputString;
-            
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(output.getBytes());
-            compressGZIP(inputStream,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
+           
+            createAndCompressGZIPFile(output,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
             
         	//byte[] buffer = new byte[1024];
             //int len;
@@ -84,14 +84,15 @@ public class De_compress {
 						floor = 0;
 					}
 					
-					System.out.println("Getting first number from row " + floor + " and column " + column);
-					System.out.println("First number reads: " + (weatherData.get(floor)[column]));
-					
-					System.out.println("Getting second number from row " + (weatherData.size()-2) + " and column " + column);
-					System.out.println("Second number reads: " + weatherData.get(weatherData.size()-2)[column]);
-					
-					
-					System.out.println("\nadding missing numbers");
+					//Debugging printlines
+//					System.out.println("Getting first number from row " + floor + " and column " + column);
+//					System.out.println("First number reads: " + (weatherData.get(floor)[column]));
+//					
+//					System.out.println("Getting second number from row " + (weatherData.size()-2) + " and column " + column);
+//					System.out.println("Second number reads: " + weatherData.get(weatherData.size()-2)[column]);
+//					
+//					
+//					System.out.println("\nadding missing numbers");
 					
 					prevData1 = (Float.parseFloat((weatherData.get(floor)[column])));
 					prevData2 = (Float.parseFloat(weatherData.get(weatherData.size()-2)[column]));
@@ -136,9 +137,8 @@ public class De_compress {
 				e.printStackTrace();
 			}
         	
-            System.out.println(output + "\n\n");
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(output.getBytes());
-            compressGZIP(inputStream,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
+            //System.out.println(output + "\n\n");
+            createAndCompressGZIPFile(output,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
         }
     }
     public static void correctTempDataGZIP(File input) throws IOException {
@@ -191,8 +191,8 @@ public class De_compress {
         	}
         	
             System.out.println(output + "\n\n");
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(output.getBytes());
-            compressGZIP(inputStream,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
+
+            createAndCompressGZIPFile(output,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
         }
     }
 }
