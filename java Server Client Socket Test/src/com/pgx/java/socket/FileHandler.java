@@ -30,52 +30,47 @@ public class FileHandler {
         }
     }
 
-    public static void appendToGZIPFile(String inputString, File input) throws IOException {
-        try (Reader decoder = new InputStreamReader(new GZIPInputStream(new FileInputStream(input)))){
-            BufferedReader br = new BufferedReader(decoder);
-            //String STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR = "";
+    public static void appendToGZIPFile(String newLine, File file) throws IOException {
+        try (BufferedReader br = new BufferedReader(
+        							new InputStreamReader(
+        								new GZIPInputStream(
+        									new FileInputStream(file))))){
+            
             String output="",line="";
-            String[] weatherDataLine = null;
+
+            
             while((line = br.readLine()) != null)
             {
-            	weatherDataLine = line.split(",");
             	output += line + "\n";
             }
-            output += inputString;
+            output += newLine;
            
-            createAndCompressGZIPFile(output,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
-            
-        	//byte[] buffer = new byte[1024];
-            //int len;
-//            System.out.println("test");
-//            while((len = in.read(buffer)) != -1){
-//                //out.write(buffer, 0, len);
-//            	System.out.println("test: "+len);
-//            	//tot 30 vorige data van de missende kolom extrapoleren
-                	
-//            }
+            createAndCompressGZIPFile(output, file);
         }
     }
     
-    public static void completeMissingDataGZIP(File input,int column) throws IOException {
-        try (Reader decoder = new InputStreamReader(new GZIPInputStream(new FileInputStream(input)))){
-            BufferedReader br = new BufferedReader(decoder);
-            //String STN,DATE,TIME,TEMP,DEWP,STP,SLP,VISIB,WDSP,PRCP,SNDP,FRSHTT,CLDC,WNDDIR = "";
+    public static void completeMissingDataGZIP(File file,int column) throws IOException {
+    	try (BufferedReader br = new BufferedReader(
+				new InputStreamReader(
+					new GZIPInputStream(
+						new FileInputStream(file))))){
+    		
             String output="",line="";
             String[] weatherDataLine = null;
             ArrayList<String[]> weatherData = new ArrayList<String[]>();
+            float newData = 0;
+            
             while((line = br.readLine()) != null)
             {
-            	System.out.println(line);
+            	// Fill arraylist of weatherdata with rows of weatherdata
             	weatherDataLine = line.split(",");
             	weatherData.add(weatherDataLine);
-            	//output += line + "\n";
             }
-            float newData = 0;
+            
             try {
+            	// If weatherdata has more than 2 rows and there is missing data extrapolate the last recieved value with up to the 30st last recieved value.
             	if (weatherData.size() > 2)
             	{
-            		System.out.println("bracket 1");
 					float prevData1,prevData2;
 					int floor = (weatherData.size()) -30;
 					
@@ -84,34 +79,29 @@ public class FileHandler {
 						floor = 0;
 					}
 					
-					//Debugging printlines
-//					System.out.println("Getting first number from row " + floor + " and column " + column);
-//					System.out.println("First number reads: " + (weatherData.get(floor)[column]));
-//					
-//					System.out.println("Getting second number from row " + (weatherData.size()-2) + " and column " + column);
-//					System.out.println("Second number reads: " + weatherData.get(weatherData.size()-2)[column]);
-//					
-//					
-//					System.out.println("\nadding missing numbers");
-					
+					//Get the 30st last recieved value
 					prevData1 = (Float.parseFloat((weatherData.get(floor)[column])));
+					
+					//Get the last successfully recieved value
 					prevData2 = (Float.parseFloat(weatherData.get(weatherData.size()-2)[column]));
+					
+					// Linear extrapolation
 					newData = prevData2+(prevData2 - prevData1);
-					System.out.println(newData);
             	}
+            	// If weatherdata has only 1 row with missing data fill the column with 0.
             	else if (weatherData.size() == 1)
             	{
-            		System.out.println("bracket 2");
             		newData = 0;
             	}
+            	// If weatherdata has only 2 rows of data with the latest value missing, copy the first value from that column.
             	else if (weatherData.size() == 2)
             	{
-            		System.out.println("bracket 3");
             		newData = Float.parseFloat(weatherData.get(0)[column]);
             	}
             	
             	System.out.println("de nieuwe gegenereerde waarde is: "+newData);
-				for(String[] dataLine : weatherData ) 
+				
+            	for(String[] dataLine : weatherData ) 
 				{
 					int count = 0;
 					for (String string : dataLine) {
@@ -133,11 +123,9 @@ public class FileHandler {
 					output += "\n";
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         	
-            //System.out.println(output + "\n\n");
             createAndCompressGZIPFile(output,new File("E:\\School\\2020\\Project 2.2\\WeatherStations\\"+weatherDataLine[0]+"\\"+weatherDataLine[1] + ".gz"));
         }
     }
