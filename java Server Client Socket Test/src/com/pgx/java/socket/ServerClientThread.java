@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,7 +21,7 @@ import org.xml.sax.InputSource;
 
 class ServerClientThread extends Thread 
 {
-	Domparser domparser;
+	XMLParser parser;
     Socket serverClient;
     int clientNo;
     int squre;
@@ -28,17 +29,22 @@ class ServerClientThread extends Thread
     String output = "";
     
     
-    ServerClientThread(Socket inSocket,int counter, Domparser domparser)
+    ServerClientThread(Socket inSocket,int counter, XMLParser parser)
     {
         serverClient = inSocket;
         clientNo=counter;
-        this.domparser = domparser;
+        this.parser = parser;
     }
     public void run()
     {
     	try
     	{
+    		int count = 0;
             //DataInputStream inStream = new DataInputStream(serverClient.getInputStream());
+    		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        	DocumentBuilder builder = factory.newDocumentBuilder();
+        	
+        	
         	BufferedReader inStream = new BufferedReader(new InputStreamReader(serverClient.getInputStream()));
             DataOutputStream outStream = new DataOutputStream(serverClient.getOutputStream());
             String clientMessage="", serverMessage="";
@@ -46,27 +52,25 @@ class ServerClientThread extends Thread
             boolean collect = false;
             while((clientMessage = inStream.readLine()) != null)
             {
-                if(clientMessage.equals("<?xml version=\"1.0\"?>")) 
-                {
-                	collect = true;
-                } 
-                else if(clientMessage.equals("</WEATHERDATA>")) 
+                
+                collect = true;
+                if(clientMessage.equals("</WEATHERDATA>")) 
                 {
                 	xmlCluster += clientMessage;
                 	collect = false;
                 }
-                
                 if(collect) 
                 {
                 	xmlCluster += clientMessage;
                 } 
                 else 
                 {
-                	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                	DocumentBuilder builder = factory.newDocumentBuilder();
-                	Document doc = builder.parse(new InputSource(new StringReader(xmlCluster)));
-                	domparser.parseWeatherData(doc);
+                	InputSource XMLSource = new InputSource(new StringReader(xmlCluster));
+                	parser.parseWeatherData(XMLSource, count);
                 	xmlCluster = "";
+                	count++;
+                	if (count == 30)
+                		count = 0;
                 }
             }
             inStream.close();
@@ -80,25 +84,7 @@ class ServerClientThread extends Thread
         }
     	finally
         {
-        	
             System.out.println("Client -" + clientNo + " exit!! ");
         }
     }
-    
-//    public static void stringToDom(String xmlSource) 
-//            throws SAXException, ParserConfigurationException, IOException, TransformerException 
-//    {
-//        // Parse the given input
-//        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//        DocumentBuilder builder = factory.newDocumentBuilder();
-//        Document doc = builder.parse(new InputSource(new StringReader(xmlSource)));
-//
-//        // Write the parsed document to an xml file
-//        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//        Transformer transformer = transformerFactory.newTransformer();
-//        DOMSource source = new DOMSource(doc);
-//
-//        StreamResult result =  new StreamResult(new File("test.xml"));
-//        transformer.transform(source, result);
-//    }
 }

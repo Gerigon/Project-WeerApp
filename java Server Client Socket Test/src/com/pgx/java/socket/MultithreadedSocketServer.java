@@ -6,7 +6,7 @@ public class MultithreadedSocketServer {
 	
 	
     public static void main(String[] args) throws Exception {
-    	Domparser domparser = new Domparser();
+    	XMLParser domparser = new XMLParser();
         try{
             ServerSocket server=new ServerSocket(7789);
             int counter=0;
