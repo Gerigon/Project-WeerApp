@@ -37,8 +37,17 @@ function switchTheme(e) {
     }
 }
 
-function getUpdatetime(){
-    return updateTime;
+function getDutchDate(){
+    let month = "";
+    let day = "";
+    let dt = new Date();
+    if((dt.getMonth() + 1) < 10){
+         month = "0" + (dt.getMonth() + 1);
+    }else{month = dt.getMonth() + 1}
+    if((dt.getDate()) < 10){
+         day = "0" + (dt.getDate() - 1)
+    }else{ day = dt.getDate() - 1}
+    return "2020-02-05";
 }
 
 toggleSwitch.addEventListener('change', switchTheme, false);

@@ -40,7 +40,7 @@ var coldestCountry = new Chart(ctx, {
         },
         title: {
             display: true,
-            text: 'Temperature'
+            text: 'Windchill Corrected Temperature'
         },
         animation:{
             duration: 400
@@ -63,7 +63,7 @@ var coldestCountry = new Chart(ctx, {
                 },
                 scaleLabel: {
                     display: true,
-                    labelString: 'Time'
+                    labelString: 'Country'
                 }
             }]
         }

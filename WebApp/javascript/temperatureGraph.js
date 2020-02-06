@@ -5,7 +5,7 @@ var temperature = new Chart(ctx, {
 
         labels: [] ,
         datasets: [{
-            label: 'Ninchan Linqui',
+            label: 'Sichuan',
             data: [],
             fill: true,
             borderColor: [
@@ -15,7 +15,7 @@ var temperature = new Chart(ctx, {
             ],
             borderWidth: 1
         },{
-            label: 'Chengdu',
+            label: 'Qinlin',
             data: [],
             fill: true,
             borderColor: [

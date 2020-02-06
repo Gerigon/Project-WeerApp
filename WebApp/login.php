@@ -1,16 +1,24 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$dir = "/samba/weerstation_share/users/";
 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
     //check the userInput on any injections
     $username = checkInput($_POST["username"]);
     $password = checkInput($_POST["password"]);
 
-    //check userInput with dataBase entries
-    if ($username == "panda" && $password == 12345 ){
+    //get the hashed password from the file with username as name
+    if(file_exists($dir.$username)) {
+        $hash = file_get_contents($dir.$username);
+    }
+    
+    //check userInput with hashed password
+    if (password_verify($password, $hash)){
         header('Location: interface.php');
         session_start();
         $_SESSION["auth"]="true";
-    }else{
+    } else {
         header('Location: index.php?error=true');
     }
 }

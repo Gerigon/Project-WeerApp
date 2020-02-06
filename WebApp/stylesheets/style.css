@@ -121,7 +121,8 @@
 }
 
 @media screen and (max-width: 767px) {
-    .content { height: 700px !important; }
+    .content { height: 700px !important;}
+    #content { padding-top: 70px; !important;}
 }
 
 .orangeButton{

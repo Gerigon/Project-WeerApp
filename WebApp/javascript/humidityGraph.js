@@ -5,7 +5,7 @@ var humidity = new Chart(ctx, {
 
         labels: [] ,
         datasets: [{
-            label: 'Ninchan Linqui',
+            label: 'Sichuan',
             data: [],
             fill: true,
             borderColor: [
@@ -16,7 +16,7 @@ var humidity = new Chart(ctx, {
             ],
             borderWidth: 1
         },{
-            label: 'Chengdu',
+            label: 'Qinlin',
             data: [],
             fill: true,
             borderColor: [

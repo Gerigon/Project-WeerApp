@@ -9,9 +9,11 @@ $(document).ready(function () {
             toggleSwitch.checked = true;
         }
     }
+    refreshData();
+    refreshHumidityStation();
     refreshHumidityGraph();
     refreshTemperatureStation();
-    refreshTemperatureGraph()
+    refreshTemperatureGraph();
     refreshTopThreeColdest();
     refreshColdestCountries();
     refreshTime();
